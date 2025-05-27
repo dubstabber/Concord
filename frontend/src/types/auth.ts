@@ -2,6 +2,8 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
+  profilePic?: string;
+  createdAt?: string;
 }
 
 export interface SignupData {
@@ -25,4 +27,5 @@ export interface AuthState {
   signup: (data: SignupData) => Promise<void>;
   login: (data: LoginData) => Promise<void>;
   logout: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 }

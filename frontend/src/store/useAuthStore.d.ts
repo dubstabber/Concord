@@ -4,6 +4,8 @@ interface AuthUser {
   id?: string;
   username?: string;
   email?: string;
+  profilePic?: string;
+  createdAt?: string;
 }
 
 interface AuthStore {
