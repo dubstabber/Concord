@@ -1,8 +1,4 @@
-import { useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
-import { Save, Send } from "lucide-react";
-import toast from "react-hot-toast";
-import type { SettingsFormData } from "../types";
+import { Send } from "lucide-react";
 import { useThemeStore } from "../store/useThemeStore";
 import { THEMES } from "../constants";
 
@@ -17,36 +13,6 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
-  const [formData, setFormData] = useState<SettingsFormData>({
-    theme: "light",
-    notifications: true,
-    language: "english",
-  });
-
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSaving(true);
-
-    // Simulate saving settings
-    setTimeout(() => {
-      toast.success("Settings saved successfully");
-      setIsSaving(false);
-    }, 1000);
-  };
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-
-    setFormData({
-      ...formData,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    });
-  };
 
   return (
     <div className="h-screen container mx-auto px-4 pt-20 max-w-5xl">
