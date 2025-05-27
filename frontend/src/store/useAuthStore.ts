@@ -5,8 +5,6 @@ import { AxiosError } from "axios";
 import { axiosInstance } from "../lib/axios";
 import type { SignupData, LoginData, AuthState } from "../types";
 
-
-
 export const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
   isSigningUp: false,
@@ -64,6 +62,21 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(axiosError.response?.data?.message || "An error occurred");
+    }
+  },
+
+  updateProfile: async (data: { profilePic?: string }) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/update-profile", data);
+      set({ authUser: res.data });
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.log("error in update profile:", error);
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "An error occurred");
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));

@@ -1,4 +1,5 @@
 import bcryptjs from "bcryptjs";
+import cloudinary from "cloudinary";
 
 import User from "../models/user.model.js";
 import { generateToken } from "../lib/utils.js";
