@@ -12,7 +12,7 @@ interface ChatState {
   isMessagesLoading: boolean;
 }
 
-export const useChatStore = create<ChatState>((set) => ({
+export const useChatStore = create<ChatState>((set, get) => ({
   messages: [],
   users: [],
   selectedUser: null,
@@ -44,6 +44,20 @@ export const useChatStore = create<ChatState>((set) => ({
       set({ isMessagesLoading: false });
     }
   },
+  sendMessage: async (messageData: string) => {
+    const { selectedUser, messages } = get();
+    try {
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser?._id}`,
+        messageData
+      );
+      set({ messages: [...messages, res.data] });
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "An error occurred");
+    }
+  },
+
   // todo: optimize this one later
   setSelectedUser: (selectedUser: User) => set({ selectedUser }),
 }));
