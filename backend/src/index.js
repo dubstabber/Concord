@@ -25,12 +25,18 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+
+const corsOptions = {
+  credentials: true,
+};
+
+if (process.env.NODE_ENV === "development") {
+  corsOptions.origin = "http://localhost:5173";
+} else {
+  corsOptions.origin = true;
+}
+
+app.use(cors(corsOptions));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
@@ -38,7 +44,10 @@ app.use("/api/messages", messageRoutes);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("/*", (req, res) => {
+  app.use((req, res, next) => {
+    if (req.url.startsWith("/api/")) {
+      return next();
+    }
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
