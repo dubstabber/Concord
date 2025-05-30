@@ -6,7 +6,8 @@ import { io } from "socket.io-client";
 import { axiosInstance } from "../lib/axios";
 import type { SignupData, LoginData, AuthState } from "../types";
 
-const BASE_URL = "http://localhost:5001";
+const BASE_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   authUser: null,
