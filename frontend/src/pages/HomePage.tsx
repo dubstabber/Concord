@@ -1,7 +1,3 @@
-import { useState } from "react";
-import type { FormEvent, ChangeEvent } from "react";
-import { useAuthStore } from "../store/useAuthStore";
-import type { Message } from "../types";
 import { useChatStore } from "../store/useChatStore";
 import NoChatSelected from "../components/NoChatSelected";
 import ChatContainer from "../components/ChatContainer";
@@ -9,32 +5,6 @@ import Sidebar from "../components/Sidebar";
 
 const HomePage = () => {
   const { selectedUser } = useChatStore();
-  const { authUser } = useAuthStore();
-  const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Welcome to Concord! This is a simple chat application.",
-      sender: "system",
-      timestamp: new Date(),
-    },
-  ]);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!newMessage.trim() || !authUser) return;
-
-    const message: Message = {
-      id: Date.now().toString(),
-      text: newMessage,
-      sender: authUser._id,
-      timestamp: new Date(),
-    };
-
-    setMessages([...messages, message]);
-    setNewMessage("");
-  };
 
   return (
     <div className="h-screen bg-base-200">

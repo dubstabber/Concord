@@ -9,8 +9,9 @@ const MessageInput = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { sendMessage } = useChatStore();
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (!file) return;
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -33,10 +34,12 @@ const MessageInput = () => {
     if (!text.trim() && !imagePreview) return;
 
     try {
-      await sendMessage({
+      // Format message data as expected by the sendMessage function
+      const messageData = JSON.stringify({
         text: text.trim(),
         image: imagePreview,
       });
+      await sendMessage(messageData);
 
       setText("");
       setImagePreview(null);

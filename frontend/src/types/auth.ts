@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface User {
   _id: string;
   fullName: string;
@@ -23,9 +25,13 @@ export interface AuthState {
   isLoggingIn: boolean;
   isUpdatingProfile: boolean;
   isCheckingAuth: boolean;
+  onlineUsers: string[];
+  socket: Socket | null;
   checkAuth: () => Promise<void>;
   signup: (data: SignupData) => Promise<void>;
   login: (data: LoginData) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 }
