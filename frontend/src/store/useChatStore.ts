@@ -41,16 +41,29 @@ export const useChatStore = create<ChatState>((set, get) => ({
   sendMessage: async (messageData: string) => {
     const { selectedUser, messages } = get();
     try {
-      const parsedData = JSON.parse(messageData);
+      let data = messageData;
+      let config = {};
+
+      try {
+        if (typeof messageData === "string") {
+          const parsedData = JSON.parse(messageData);
+          if (typeof parsedData === "object") {
+            data = parsedData;
+            config = {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
+          }
+        }
+      } catch (err) {
+        console.error("Error parsing message data:", err);
+      }
 
       const res = await axiosInstance.post(
         `/messages/send/${selectedUser?._id}`,
-        parsedData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        data,
+        config
       );
       set({ messages: [...messages, res.data] });
     } catch (error) {

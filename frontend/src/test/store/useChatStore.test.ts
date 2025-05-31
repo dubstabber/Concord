@@ -135,8 +135,10 @@ describe("useChatStore", () => {
 
       expect(axiosInstance.post).toHaveBeenCalledWith(
         `/messages/send/${selectedUser._id}`,
-        messageData
+        { text: "New message" },
+        { headers: { "Content-Type": "application/json" } }
       );
+
       expect(useChatStore.getState().messages).toHaveLength(
         mockMessages.length + 1
       );
@@ -212,6 +214,8 @@ describe("useChatStore", () => {
           const newMessage = {
             _id: "new-msg-id",
             sender: "user-1",
+            senderId: "user-1",
+            receiverId: "test-user-id",
             text: "New socket message",
             createdAt: new Date().toISOString(),
           };
