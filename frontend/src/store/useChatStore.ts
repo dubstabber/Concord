@@ -41,12 +41,20 @@ export const useChatStore = create<ChatState>((set, get) => ({
   sendMessage: async (messageData: string) => {
     const { selectedUser, messages } = get();
     try {
+      const parsedData = JSON.parse(messageData);
+
       const res = await axiosInstance.post(
         `/messages/send/${selectedUser?._id}`,
-        messageData
+        parsedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       set({ messages: [...messages, res.data] });
     } catch (error) {
+      console.error("Error sending message:", error);
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(axiosError.response?.data?.message || "An error occurred");
     }
