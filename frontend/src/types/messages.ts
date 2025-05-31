@@ -3,6 +3,7 @@ export interface Message {
   text?: string;
   sender?: string;
   senderId?: string;
+  receiverId?: string;
   timestamp?: Date;
   createdAt?: string;
   image?: string;

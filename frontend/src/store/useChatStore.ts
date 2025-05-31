@@ -64,14 +64,27 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const { selectedUser } = get();
     if (!selectedUser) return;
 
-    const socket = useAuthStore.getState().socket;
+    get().unsubscribeFromMessages();
 
-    socket?.on("newMessage", (newMessage: Message) => {
-      const isMessageSentFromSelectedUser =
-        newMessage.sender === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
-      const { messages } = get();
-      set({ messages: [...messages, newMessage] });
+    const socket = useAuthStore.getState().socket;
+    if (!socket) {
+      console.error("Socket not available for message subscription");
+      return;
+    }
+
+    console.log(`Subscribing to messages for user: ${selectedUser._id}`);
+
+    socket.on("newMessage", (newMessage: Message) => {
+      console.log("New message received:", newMessage);
+
+      if (
+        newMessage.senderId === selectedUser._id ||
+        newMessage.receiverId === selectedUser._id
+      ) {
+        console.log("Adding message to chat");
+        const { messages } = get();
+        set({ messages: [...messages, newMessage] });
+      }
     });
   },
 

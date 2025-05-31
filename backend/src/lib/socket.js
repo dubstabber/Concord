@@ -13,25 +13,39 @@ const io = new Server(server, {
   },
 });
 
+const userSocketMap = {};
+
 export function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }
 
-// used to store online users
-const userSocketMap = {};
+function broadcastOnlineUsers() {
+  const onlineUsers = Object.keys(userSocketMap);
+  console.log("Broadcasting online users:", onlineUsers);
+  io.emit("getOnlineUsers", onlineUsers);
+}
 
 io.on("connection", (socket) => {
   console.log("A user connected: ", socket.id);
 
   const userId = socket.handshake.query.userId;
-  if (userId) userSocketMap[userId] = socket.id;
 
-  socket.emit("getOnlineUsers", Object.keys(userSocketMap));
+  if (userId) {
+    console.log(`User ${userId} is now online with socket ${socket.id}`);
+    userSocketMap[userId] = socket.id;
+
+    broadcastOnlineUsers();
+  }
 
   socket.on("disconnect", () => {
     console.log("A user disconnected: ", socket.id);
-    delete userSocketMap[userId];
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+    if (userId) {
+      console.log(`User ${userId} is now offline`);
+      delete userSocketMap[userId];
+
+      broadcastOnlineUsers();
+    }
   });
 });
 
